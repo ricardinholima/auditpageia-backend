@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuditPageIA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="max-w-xl mx-auto p-6 mt-10 bg-white shadow-xl rounded-2xl">
+    <h1 class="text-2xl font-bold mb-4 text-center">AuditPageIA</h1>
+    <p class="mb-4 text-gray-700 text-center">Cole a URL da página que você quer auditar:</p>
+    <input id="urlInput" type="text" placeholder="https://exemplo.com" class="w-full p-3 border rounded-xl mb-4">
+    <button onclick="analisar()" class="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700">Analisar com IA</button>
+
+    <div id="resultado" class="mt-6 hidden">
+      <h2 class="text-xl font-bold mb-2">Resultado:</h2>
+      <pre id="respostaTexto" class="bg-gray-100 p-4 rounded-xl text-sm whitespace-pre-wrap"></pre>
+    </div>
+  </div>
+
+  <script>
+    async function analisar() {
+      const url = document.getElementById("urlInput").value;
+      if (!url) return alert("Insira uma URL válida");
+
+      document.getElementById("respostaTexto").textContent = "Analisando...";
+      document.getElementById("resultado").classList.remove("hidden");
+
+      try {
+        const res = await fetch("https://SEU_BACKEND/renderizar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url })
+        });
+        const data = await res.json();
+        document.getElementById("respostaTexto").textContent = data.relatorio || "Erro na análise";
+      } catch (e) {
+        document.getElementById("respostaTexto").textContent = "Erro ao conectar com o servidor.";
+      }
+    }
+  </script>
+</body>
+</html>
